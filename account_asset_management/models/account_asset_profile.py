@@ -99,6 +99,7 @@ class AccountAssetProfile(models.Model):
         help="Period length for the depreciation accounting entries",
     )
     method_progress_factor = fields.Float(string="Degressive Factor", default=0.3)
+    method_db_perc = fields.Float(string="Declining Balance Factor", default=2)
     method_time = fields.Selection(
         selection=lambda self: self._selection_method_time(),
         string="Time Method",
