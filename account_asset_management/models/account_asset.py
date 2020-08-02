@@ -187,6 +187,13 @@ class AccountAsset(models.Model):
         states={"draft": [("readonly", False)]},
         default=0.3,
     )
+    method_db_perc = fields.Float(
+        string="Declining Balance Factor",
+        readonly=True,
+        states={"draft": [("readonly", False)]},
+        default=2,
+        help="Declining Balance percentage as a decimal"
+    )
     method_time = fields.Selection(
         selection=lambda self: self.env[
             "account.asset.profile"
@@ -352,6 +359,7 @@ class AccountAsset(models.Model):
                     "days_calc": profile.days_calc,
                     "use_leap_years": profile.use_leap_years,
                     "method_progress_factor": profile.method_progress_factor,
+                    "method_db_perc": profile.method_db_perc,
                     "prorata": profile.prorata,
                     "account_analytic_id": profile.account_analytic_id,
                     "group_ids": profile.group_ids,
@@ -812,7 +820,7 @@ class AccountAsset(models.Model):
         return (self.depreciation_base / days) * cy_days
 
     def _compute_year_amount(
-        self, residual_amount, depreciation_start_date, depreciation_stop_date, entry
+        self, residual_amount, depreciation_start_date, depreciation_stop_date, entry, i
     ):
         """
         Localization: override this method to change the degressive-linear
@@ -848,6 +856,19 @@ class AccountAsset(models.Model):
                 return residual_amount - self.salvage_value
             else:
                 return year_amount_degressive
+        if self.method == "macrs":
+            if i == 0:
+                years_left = self.method_number
+                year_amount_stline = ((1 / years_left) * residual_amount) / 2
+                year_amount_db = ((self.method_db_perc / self.method_number) * residual_amount) / 2
+            else:
+                years_left = self.method_number - i + 0.5
+                year_amount_stline = (1 / years_left) * residual_amount
+                year_amount_db = (self.method_db_perc / self.method_number) * residual_amount
+            if year_amount_db > year_amount_stline:
+                return year_amount_db
+            else:
+                return year_amount_stline
         else:
             raise UserError(_("Illegal value %s in asset.method.") % self.method)
 
@@ -910,6 +931,7 @@ class AccountAsset(models.Model):
                     depreciation_start_date,
                     depreciation_stop_date,
                     entry,
+                    i,
                 )
                 if self.method_period == "year":
                     period_amount = year_amount

@@ -43,6 +43,10 @@
                                 attrs="{'invisible': [('method', 'in', ['linear', 'linear-limit'])], 'required': [('method', 'in', ['degressive', 'degr-linear', 'degr-limit'])]}"
                             />
                             <field
+                                name="method_db_perc"
+                                attrs="{'invisible': [('method', 'in', ['linear', 'linear-limit', 'degressive', 'degr-linear', 'degr-limit'])], 'required': [('method', 'in', ['macrs])]}"
+                            />
+                            <field
                                 name="prorata"
                                 attrs="{'readonly':[('method_time','!=','year')]}"
                             />
