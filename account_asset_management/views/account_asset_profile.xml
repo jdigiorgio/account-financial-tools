@@ -44,7 +44,7 @@
                             />
                             <field
                                 name="method_db_perc"
-                                attrs="{'invisible': [('method', 'in', ['linear', 'linear-limit', 'degressive', 'degr-linear', 'degr-limit'])], 'required': [('method', 'in', ['macrs])]}"
+                                attrs="{'invisible': [('method', 'in', ['linear', 'linear-limit', 'degressive', 'degr-linear', 'degr-limit'])], 'required': [('method', 'in', ['macrs'])]}"
                             />
                             <field
                                 name="prorata"
