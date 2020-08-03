@@ -687,7 +687,7 @@ class AccountAsset(models.Model):
             )
         return True
 
-    def _get_fy_duration(self, fy, option="days"):
+    def _get_fy_duration(self, fy, option="years"):
         """Returns fiscal year duration.
 
         @param option:
