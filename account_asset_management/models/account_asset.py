@@ -859,12 +859,10 @@ class AccountAsset(models.Model):
         if self.method == "macrs":
             if i == 0:
                 years_left = self.method_number
-                year_amount_stline = ((1 / years_left) * residual_amount) / 2
-                year_amount_db = ((self.method_db_perc / self.method_number) * residual_amount) / 2
             else:
                 years_left = self.method_number - i + 0.5
-                year_amount_stline = (1 / years_left) * residual_amount
-                year_amount_db = (self.method_db_perc / self.method_number) * residual_amount
+            year_amount_stline = (1 / years_left) * residual_amount
+            year_amount_db = (self.method_db_perc / self.method_number) * residual_amount
             if year_amount_db > year_amount_stline:
                 return year_amount_db
             else:

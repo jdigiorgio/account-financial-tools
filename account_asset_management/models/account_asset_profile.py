@@ -160,7 +160,7 @@ class AccountAssetProfile(models.Model):
             ("degressive", _("Degressive")),
             ("degr-linear", _("Degressive-Linear")),
             ("degr-limit", _("Degressive  up to Salvage Value")),
-            ("macrs", _("IRS Modified Accelerated Cost Recovery System - half year convention"))
+            ("macrs", _("IRS Modified Accelerated Cost Recovery System"))
         ]
 
     @api.model
