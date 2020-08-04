@@ -153,7 +153,11 @@
                                     />
                                     <field
                                         name="prorata"
-                                        attrs="{'readonly': [('method_time', '!=', 'year')]}"
+                                        attrs="{'readonly':[('method_time','!=','year')], 'invisible: [('method', 'in', ['macrs'])]}"
+                                    />
+                                    <field
+                                        name="hy_conv"
+                                        attrs="{'invisible': [('method', 'in', ['linear', 'linear-limit', 'degressive', 'degr-linear', 'degr-limit'])]}"
                                     />
                                 </group>
                             </group>

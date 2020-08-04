@@ -237,6 +237,13 @@ class AccountAsset(models.Model):
         "have to be done from the depreciation start date instead "
         "of the first day of the fiscal year.",
     )
+    hy_conv = fields.Boolean(
+        string="Half-Year Convention",
+        default=False,
+        help="Indicates that the first depreciation entry for this asset "
+        "has to be done from the mid point of the fiscal year instead of "
+        "The first day of the fiscal year",
+    )
     depreciation_line_ids = fields.One2many(
         comodel_name="account.asset.line",
         inverse_name="asset_id",
@@ -361,6 +368,7 @@ class AccountAsset(models.Model):
                     "method_progress_factor": profile.method_progress_factor,
                     "method_db_perc": profile.method_db_perc,
                     "prorata": profile.prorata,
+                    "hy_conv": profile.hy_conv,
                     "account_analytic_id": profile.account_analytic_id,
                     "group_ids": profile.group_ids,
                 }
@@ -734,6 +742,12 @@ class AccountAsset(models.Model):
         """
         duration_factor = 1.0
         fy = entry["fy"]
+        if self.hy_conv:
+            if firstyear:
+                duration_factor = 0.5
+            else:
+                duration_factor = self._get_fy_duration(fy, option="years")
+            return duration_factor
         if self.prorata:
             if firstyear:
                 depreciation_date_start = self.date_start
@@ -758,7 +772,7 @@ class AccountAsset(models.Model):
         In case of 'Linear': the first month is counted as a full month
         if the fiscal year starts in the middle of a month.
         """
-        if self.prorata:
+        if self.prorata or self.hy_conv:
             depreciation_start_date = self.date_start
         else:
             depreciation_start_date = fy.date_from
@@ -799,7 +813,7 @@ class AccountAsset(models.Model):
         'Prorata Temporis'
         """
         amount = entry.get("period_amount")
-        if self.prorata and self.method_time == "year":
+        if (self.prorata or self.hy_conv) and self.method_time == "year":
             dates = [x for x in line_dates if x <= entry["date_stop"]]
             full_periods = len(dates) - 1
             amount = entry["fy_amount"] - amount * full_periods

@@ -133,6 +133,13 @@ class AccountAssetProfile(models.Model):
         "has to be done from the depreciation start date instead of "
         "the first day of the fiscal year.",
     )
+    hy_conv = fields.Boolean(
+        default=False,
+        string="Half-Year Convention",
+        help="Indicates that the first depreciation entry for this asset "
+        "has to be done from the mid point of the fiscal year instead of "
+        "The first day of the fiscal year",
+    )
     open_asset = fields.Boolean(
         string="Skip Draft State",
         help="Check this if you want to automatically confirm the assets "
@@ -160,7 +167,7 @@ class AccountAssetProfile(models.Model):
             ("degressive", _("Degressive")),
             ("degr-linear", _("Degressive-Linear")),
             ("degr-limit", _("Degressive  up to Salvage Value")),
-            ("macrs", _("IRS Modified Accelerated Cost Recovery System\r - Half Year Convention"))
+            ("macrs", _("IRS Modified Accelerated Cost Recovery System"))
         ]
 
     @api.model
