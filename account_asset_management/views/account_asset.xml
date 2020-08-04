@@ -145,7 +145,7 @@
                                     <field name="method" />
                                     <field
                                         name="method_progress_factor"
-                                        attrs="{'invisible': [('method', 'in', ['linear', 'linear-limit'])], 'required': [('method', 'in', ['degressive', 'degr-linear', 'degr-limit'])]}"
+                                        attrs="{'invisible': [('method', 'in', ['linear', 'linear-limit','macrs'])], 'required': [('method', 'in', ['degressive', 'degr-linear', 'degr-limit'])]}"
                                     />
                                     <field
                                         name="method_db_perc"
